@@ -4,3 +4,33 @@ bin/
 obj/
 *.log
 *.tmp
+
+# Visual Studio
+.vs/
+.vscode/
+
+# Build
+bin/
+obj/
+
+# Logs & Temp
+*.log
+*.tmp
+
+# Environment
+.env/
+
+# User files
+*.user
+*.suo
+
+# ASP.NET
+appsettings.Development.json
+appsettings.Local.json
+
+# Secrets
+secrets.json
+
+# OS
+.DS_Store
+Thumbs.db
