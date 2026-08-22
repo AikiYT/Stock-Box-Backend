@@ -1,17 +1,17 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using StockBox.Application.Interfaces.Services;
-using StockBox.Application.ViewModels.Categories;
+using StockBox.Application.ViewModels.Customers;
 
-namespace StockBox.Api.Controllers
+namespace StockBox.Api.Controllers.Customers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CategoriesController : ControllerBase
+    public class CustomersController : ControllerBase
     {
-        private readonly ICategoryService _service;
+        private readonly ICustomerService _service;
 
-        public CategoriesController(ICategoryService service)
+        public CustomersController(ICustomerService service)
         {
             _service = service;
         }
@@ -25,17 +25,17 @@ namespace StockBox.Api.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
-            var category = await _service.GetByIdAsync(id);
+            var customer = await _service.GetByIdAsync(id);
 
-            if (category == null)
+            if (customer == null)
                 return NotFound();
 
-            return Ok(category);
+            return Ok(customer);
         }
 
         [HttpPost]
         public async Task<IActionResult> Create(
-            SaveCategoryViewModel vm)
+            SaveCustomerViewModel vm)
         {
             await _service.CreateAsync(vm);
 
@@ -45,7 +45,7 @@ namespace StockBox.Api.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(
             int id,
-            SaveCategoryViewModel vm)
+            SaveCustomerViewModel vm)
         {
             await _service.UpdateAsync(id, vm);
 

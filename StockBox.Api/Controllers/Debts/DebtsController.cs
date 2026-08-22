@@ -1,17 +1,17 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using StockBox.Application.Interfaces.Services;
-using StockBox.Application.ViewModels.Customers;
+using StockBox.Application.ViewModels.Deudas;
 
-namespace StockBox.Api.Controllers
+namespace StockBox.Api.Controllers.Debts
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CustomersController : ControllerBase
+    public class DebtsController : ControllerBase
     {
-        private readonly ICustomerService _service;
+        private readonly IDebtService _service;
 
-        public CustomersController(ICustomerService service)
+        public DebtsController(IDebtService service)
         {
             _service = service;
         }
@@ -25,17 +25,24 @@ namespace StockBox.Api.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
-            var customer = await _service.GetByIdAsync(id);
+            var debt = await _service.GetByIdAsync(id);
 
-            if (customer == null)
+            if (debt == null)
                 return NotFound();
 
-            return Ok(customer);
+            return Ok(debt);
+        }
+
+        [HttpGet("customer/{customerId}")]
+        public async Task<IActionResult> GetByCustomerId(int customerId)
+        {
+            return Ok(
+                await _service.GetByCustomerIdAsync(customerId));
         }
 
         [HttpPost]
         public async Task<IActionResult> Create(
-            SaveCustomerViewModel vm)
+            SaveDebtViewModel vm)
         {
             await _service.CreateAsync(vm);
 
@@ -45,7 +52,7 @@ namespace StockBox.Api.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(
             int id,
-            SaveCustomerViewModel vm)
+            SaveDebtViewModel vm)
         {
             await _service.UpdateAsync(id, vm);
 

@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using StockBox.Application.Interfaces.Services;
 using StockBox.Application.ViewModels.ServiceRecords;
 
-namespace StockBox.Api.Controllers
+namespace StockBox.Api.Controllers.CustomerServiceRecords
 {
     [Route("api/[controller]")]
     [ApiController]
