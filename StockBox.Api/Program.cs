@@ -3,7 +3,6 @@ using StockBox.Identity.DependencyInjection;
 using StockBox.Identity.Seed;
 using StockBox.Infrastructure.Persistence.DependencyInjection;
 
-
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
@@ -21,11 +20,8 @@ builder.Services.AddIdentityInfrastructure(
 
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.UseHttpsRedirection();
 
