@@ -5,6 +5,18 @@ using StockBox.Infrastructure.Persistence.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// --- AGREGAR CORS AQUÍ ---
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowFrontend", policy =>
+    {
+        policy.WithOrigins("http://localhost:3000", "http://localhost:5173") // Cambia las URLs por las de tu Frontend (React, Angular, Vue, etc.)
+              .AllowAnyHeader()
+              .AllowAnyMethod()
+              .AllowCredentials(); // Necesario si manejas cookies o autenticación basada en tokens/sesión
+    });
+});
+
 builder.Services.AddControllers();
 
 builder.Services.AddEndpointsApiExplorer();
@@ -24,6 +36,9 @@ app.UseSwagger();
 app.UseSwaggerUI();
 
 app.UseHttpsRedirection();
+
+// --- ACTIVAR CORS AQUÍ (IMPORTANTE: Debe ir ANTES de UseAuthentication y UseAuthorization) ---
+app.UseCors("AllowFrontend");
 
 app.UseAuthentication();
 
