@@ -5,14 +5,15 @@ using StockBox.Infrastructure.Persistence.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// 1. Configurar CORS
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend", policy =>
     {
-        policy.WithOrigins("http://localhost:3000", "http://localhost:5173") // Cambia las URLs por las de tu Frontend (React, Angular, Vue, etc.)
+        policy.WithOrigins("http://localhost:3000", "http://localhost:5173") // Agrega aquí el dominio de tu frontend si está en producción
               .AllowAnyHeader()
               .AllowAnyMethod()
-              .AllowCredentials(); // Necesario si manejas cookies o autenticación basada en tokens/sesión
+              .AllowCredentials();
     });
 });
 
@@ -29,13 +30,34 @@ builder.Services.AddPersistenceInfrastructure(
 builder.Services.AddIdentityInfrastructure(
     builder.Configuration);
 
+// 2. Prevenir que Identity haga redirección 302 a '/Account/Login' en API (Devuelve 401/403 limpio)
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.Events.OnRedirectToLogin = context =>
+    {
+        context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+        return Task.CompletedTask;
+    };
+    options.Events.OnRedirectToAccessDenied = context =>
+    {
+        context.Response.StatusCode = StatusCodes.Status403Forbidden;
+        return Task.CompletedTask;
+    };
+});
+
 var app = builder.Build();
 
+// 3. Configurar Swagger para que cargue directamente en la raíz ("/")
 app.UseSwagger();
-app.UseSwaggerUI();
+app.UseSwaggerUI(c =>
+{
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "StockBox API v1");
+    c.RoutePrefix = string.Empty;
+});
 
 app.UseHttpsRedirection();
 
+// 4. Activar CORS antes de la Autenticación/Autorización
 app.UseCors("AllowFrontend");
 
 app.UseAuthentication();
