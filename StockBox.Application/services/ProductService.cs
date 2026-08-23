@@ -19,7 +19,7 @@ namespace StockBox.Application.services
             _productRepository = productRepository;
         }
 
-        public async Task CreateAsync(SaveProductViewModel vm)
+        public async Task<ProductViewModel> CreateAsync(SaveProductViewModel vm)
         {
             var product = new Product
             {
@@ -32,6 +32,18 @@ namespace StockBox.Application.services
             };
 
             await _productRepository.AddAsync(product);
+
+            return new ProductViewModel
+            {
+                Id = product.Id,
+                Name = product.Name,
+                Description = product.Description,
+                Price = product.Price,
+                Stock = product.Stock,
+                MinimumStock = product.MinimumStock,
+                CategoryId = product.CategoryId,
+                CategoryName = product.Category?.Name ?? string.Empty
+            };
         }
 
         public async Task<List<ProductViewModel>> GetAllAsync()

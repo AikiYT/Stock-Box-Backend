@@ -37,9 +37,9 @@ namespace StockBox.Api.Controllers.Products
         public async Task<IActionResult> Create(
             SaveProductViewModel vm)
         {
-            await _service.CreateAsync(vm);
+         var product = await _service.CreateAsync(vm);
 
-            return Ok();
+            return Ok(product);
         }
 
         [HttpPut("{id}")]

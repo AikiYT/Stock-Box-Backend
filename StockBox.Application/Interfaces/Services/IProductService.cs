@@ -9,7 +9,7 @@ namespace StockBox.Application.Interfaces.Services
 {
     public interface IProductService
     {
-        Task CreateAsync(SaveProductViewModel vm);
+        Task<ProductViewModel> CreateAsync(SaveProductViewModel vm);
 
         Task<List<ProductViewModel>> GetAllAsync();
 
