@@ -5,7 +5,6 @@ using StockBox.Infrastructure.Persistence.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// --- AGREGAR CORS AQUÍ ---
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend", policy =>
@@ -37,7 +36,6 @@ app.UseSwaggerUI();
 
 app.UseHttpsRedirection();
 
-// --- ACTIVAR CORS AQUÍ (IMPORTANTE: Debe ir ANTES de UseAuthentication y UseAuthorization) ---
 app.UseCors("AllowFrontend");
 
 app.UseAuthentication();
