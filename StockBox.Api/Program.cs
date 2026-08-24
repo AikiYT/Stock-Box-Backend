@@ -10,13 +10,16 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend", policy =>
     {
-        policy.WithOrigins("https://systems-stock-box.94zvjo.easypanel.host/", "https://systems-stock-box.94zvjo.easypanel.host/products") // Agrega aquí el dominio de tu frontend si está en producción
+        policy.WithOrigins(
+                    "http://localhost:3000",
+                    "http://localhost:5173",
+                    "https://systems-stock-box.94zvjo.easypanel.host" // Sin '/' al final y sin rutas como '/products'
+              )
               .AllowAnyHeader()
               .AllowAnyMethod()
               .AllowCredentials();
     });
 });
-
 builder.Services.AddControllers();
 
 builder.Services.AddEndpointsApiExplorer();
