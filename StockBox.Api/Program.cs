@@ -10,7 +10,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend", policy =>
     {
-        policy.WithOrigins("http://localhost:3000", "http://localhost:5175") // Agrega aquí el dominio de tu frontend si está en producción
+        policy.WithOrigins("https://systems-stock-box.94zvjo.easypanel.host/", "https://systems-stock-box.94zvjo.easypanel.host/products") // Agrega aquí el dominio de tu frontend si está en producción
               .AllowAnyHeader()
               .AllowAnyMethod()
               .AllowCredentials();
