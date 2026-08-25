@@ -5,7 +5,7 @@ using StockBox.Infrastructure.Persistence.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// 1. Configurar CORS
+// 1. Configure CORS
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend", policy =>
@@ -13,62 +13,61 @@ builder.Services.AddCors(options =>
         policy.WithOrigins(
                     "http://localhost:3000",
                     "http://localhost:5173",
-                    "https://systems-stock-box.94zvjo.easypanel.host" // Sin '/' al final y sin rutas como '/products'
+                    "https://systems-stock-box.94zvjo.easypanel.host"
               )
               .AllowAnyHeader()
               .AllowAnyMethod()
               .AllowCredentials();
     });
 });
+
+// 2. Controllers
 builder.Services.AddControllers();
 
+// 3. Swagger
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+// 4. Application
 builder.Services.AddApplicationLayer();
 
+// 5. Persistence
 builder.Services.AddPersistenceInfrastructure(
     builder.Configuration);
 
+// 6. Identity
 builder.Services.AddIdentityInfrastructure(
     builder.Configuration);
 
-// 2. Prevenir que Identity haga redirección 302 a '/Account/Login' en API (Devuelve 401/403 limpio)
-builder.Services.ConfigureApplicationCookie(options =>
-{
-    options.Events.OnRedirectToLogin = context =>
-    {
-        context.Response.StatusCode = StatusCodes.Status401Unauthorized;
-        return Task.CompletedTask;
-    };
-    options.Events.OnRedirectToAccessDenied = context =>
-    {
-        context.Response.StatusCode = StatusCodes.Status403Forbidden;
-        return Task.CompletedTask;
-    };
-});
-
 var app = builder.Build();
 
-// 3. Configurar Swagger para que cargue directamente en la raíz ("/")
+// 7. Swagger
 app.UseSwagger();
 app.UseSwaggerUI(c =>
 {
-    c.SwaggerEndpoint("/swagger/v1/swagger.json", "StockBox API v1");
+    c.SwaggerEndpoint(
+        "/swagger/v1/swagger.json",
+        "StockBox API v1");
+
     c.RoutePrefix = string.Empty;
 });
 
+// 8. HTTPS
 app.UseHttpsRedirection();
 
-// 4. Activar CORS antes de la Autenticación/Autorización
+// 9. CORS
 app.UseCors("AllowFrontend");
 
+// 10. Authentication
 app.UseAuthentication();
 
+// 11. Authorization
 app.UseAuthorization();
 
+// 12. Controllers
 app.MapControllers();
 
+// 13. Identity Seeder
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;

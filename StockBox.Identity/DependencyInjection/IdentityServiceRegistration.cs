@@ -7,10 +7,6 @@ using StockBox.Identity.Context;
 using StockBox.Identity.Models;
 using StockBox.Identity.Services;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace StockBox.Identity.DependencyInjection
 {
@@ -42,9 +38,11 @@ namespace StockBox.Identity.DependencyInjection
                 .AddEntityFrameworkStores<StockBoxIdentityDbContext>()
                 .AddDefaultTokenProviders();
 
+            // Application Cookie configuration
             services.ConfigureApplicationCookie(options =>
             {
                 options.Cookie.Name = "StockBox.Auth";
+
                 options.LoginPath = "/api/auth/login";
                 options.AccessDeniedPath = "/api/auth/access-denied";
 
@@ -52,9 +50,31 @@ namespace StockBox.Identity.DependencyInjection
                 options.SlidingExpiration = true;
 
                 options.Cookie.HttpOnly = true;
-                options.Cookie.SameSite = SameSiteMode.Lax;
+
+                // Required for cross-site requests from the frontend
+                options.Cookie.SameSite = SameSiteMode.None;
+
+                // SameSite=None requires Secure
                 options.Cookie.SecurePolicy =
                     CookieSecurePolicy.Always;
+
+                // Return 401 instead of redirecting to a login page
+                options.Events.OnRedirectToLogin = context =>
+                {
+                    context.Response.StatusCode =
+                        StatusCodes.Status401Unauthorized;
+
+                    return Task.CompletedTask;
+                };
+
+                // Return 403 instead of redirecting to an access-denied page
+                options.Events.OnRedirectToAccessDenied = context =>
+                {
+                    context.Response.StatusCode =
+                        StatusCodes.Status403Forbidden;
+
+                    return Task.CompletedTask;
+                };
             });
 
             services.AddScoped<IIdentityService, IdentityService>();
@@ -63,4 +83,3 @@ namespace StockBox.Identity.DependencyInjection
         }
     }
 }
-
