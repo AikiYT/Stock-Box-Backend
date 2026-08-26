@@ -14,17 +14,25 @@ namespace StockBox.Identity.Services
             LoginViewModel model,
             HttpContext httpContext);
 
-        Task LogoutAsync(HttpContext httpContext);
+        Task LogoutAsync(
+            HttpContext httpContext);
 
         Task<(bool Success, string Message)> CreateUserAsync(
             CreateUserViewModel model);
 
         Task<List<UserViewModel>> GetUsersAsync();
 
+        Task<List<string>> GetRolesAsync();
+
         Task<bool> AssignRoleAsync(
             string userId,
             string roleName);
 
-        Task<List<string>> GetRolesAsync();
+        Task<(bool Success, string Message)> UpdateUserAsync(
+            string userId,
+            UpdateUserViewModel model);
+
+        Task<(bool Success, string Message)> DeleteUserAsync(
+            string userId);
     }
 }

@@ -166,5 +166,59 @@ namespace StockBox.Identity.Services
                 .Select(r => r.Name!)
                 .ToListAsync();
         }
+
+        public async Task<(bool Success, string Message)> UpdateUserAsync(
+    string userId,
+    UpdateUserViewModel model)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+
+            if (user == null)
+            {
+                return (false, "User not found.");
+            }
+
+            user.FirstName = model.FirstName;
+            user.LastName = model.LastName;
+            user.Email = model.Email;
+            user.UserName = model.UserName;
+            user.IsActive = model.IsActive;
+
+            var result = await _userManager.UpdateAsync(user);
+
+            if (!result.Succeeded)
+            {
+                var errors = string.Join(
+                    " ",
+                    result.Errors.Select(e => e.Description));
+
+                return (false, errors);
+            }
+
+            return (true, "User updated successfully.");
+        }
+        public async Task<(bool Success, string Message)> DeleteUserAsync(
+    string userId)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+
+            if (user == null)
+            {
+                return (false, "User not found.");
+            }
+
+            var result = await _userManager.DeleteAsync(user);
+
+            if (!result.Succeeded)
+            {
+                var errors = string.Join(
+                    " ",
+                    result.Errors.Select(e => e.Description));
+
+                return (false, errors);
+            }
+
+            return (true, "User deleted successfully.");
+        }
     }
 }

@@ -85,5 +85,51 @@ namespace StockBox.Api.Controllers.Users
                 message = "Role assigned successfully."
             });
         }
+        [HttpPut("{userId}")]
+        [Authorize(Roles = "SuperAdmin,Admin")]
+        public async Task<IActionResult> UpdateUser(
+    string userId,
+    [FromBody] UpdateUserViewModel model)
+        {
+            var result =
+                await _identityService.UpdateUserAsync(
+                    userId,
+                    model);
+
+            if (!result.Success)
+            {
+                return BadRequest(new
+                {
+                    message = result.Message
+                });
+            }
+
+            return Ok(new
+            {
+                message = result.Message
+            });
+        }
+        [HttpDelete("{userId}")]
+        [Authorize(Roles = "SuperAdmin")]
+        public async Task<IActionResult> DeleteUser(
+    string userId)
+        {
+            var result =
+                await _identityService.DeleteUserAsync(
+                    userId);
+
+            if (!result.Success)
+            {
+                return BadRequest(new
+                {
+                    message = result.Message
+                });
+            }
+
+            return Ok(new
+            {
+                message = result.Message
+            });
+        }
     }
-}  //
+}  
