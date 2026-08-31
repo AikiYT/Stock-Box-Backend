@@ -13,14 +13,13 @@ builder.Services.AddCors(options =>
         policy.WithOrigins(
                     "http://localhost:3000",
                     "http://localhost:5173",
-                    "https://systems-stock-box.94zvjo.easypanel.host"
+                    "https://systems-stock-box.94zvjo.easypanel.host" // Sin '/' al final
               )
               .AllowAnyHeader()
               .AllowAnyMethod()
               .AllowCredentials();
     });
 });
-
 // 2. Controllers
 builder.Services.AddControllers();
 
@@ -52,11 +51,11 @@ app.UseSwaggerUI(c =>
     c.RoutePrefix = string.Empty;
 });
 
-// 8. HTTPS
-app.UseHttpsRedirection();
-
-// 9. CORS
+// 8. CORS (Debe ir ANTES de HTTPS Redirection y Auth)
 app.UseCors("AllowFrontend");
+
+// 9. HTTPS
+app.UseHttpsRedirection();
 
 // 10. Authentication
 app.UseAuthentication();
