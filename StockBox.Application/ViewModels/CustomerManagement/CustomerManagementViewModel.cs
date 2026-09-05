@@ -21,10 +21,44 @@ namespace StockBox.Application.ViewModels.CustomerManagement
 
         public string Address { get; set; } = string.Empty;
 
-        public List<CustomerServiceRecordViewModel> Services { get; set; }
+        public List<CustomerServiceManagementViewModel> Services { get; set; }
             = new();
 
-        public List<DebtViewModel> Debts { get; set; }
+        public List<DebtManagementViewModel> Debts { get; set; }
             = new();
+    }
+
+
+    public class CustomerServiceManagementViewModel
+    {
+        public int Id { get; set; }
+
+        public string Description { get; set; } = string.Empty;
+
+        public DateTime ServiceDate { get; set; }
+
+        public decimal Amount { get; set; }
+
+        public string Notes { get; set; } = string.Empty;
+    }
+
+
+    public class DebtManagementViewModel
+    {
+        public int Id { get; set; }
+
+        public decimal Amount { get; set; }
+
+        public decimal PaidAmount { get; set; }
+
+        public decimal RemainingAmount { get; set; }
+
+        public bool IsPaid { get; set; }
+
+        public DateTime CreatedAt { get; set; }
+
+        public DateTime? PaidAt { get; set; }
+
+        public string Notes { get; set; } = string.Empty;
     }
 }

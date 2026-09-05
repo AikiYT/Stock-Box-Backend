@@ -17,6 +17,7 @@ namespace StockBox.Api.Controllers.CustomerManagement
             _service = service;
         }
 
+
         // GET: api/CustomerManagement
         [HttpGet]
         public async Task<IActionResult> GetAll()
@@ -26,41 +27,78 @@ namespace StockBox.Api.Controllers.CustomerManagement
             return Ok(customers);
         }
 
+
         // GET: api/CustomerManagement/5
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
-            var customer =
-                await _service.GetByIdAsync(id);
+            var customer = await _service.GetByIdAsync(id);
 
             if (customer == null)
-                return NotFound();
+                return NotFound(new
+                {
+                    message = "Customer not found."
+                });
 
             return Ok(customer);
         }
 
+
         // POST: api/CustomerManagement
         [HttpPost]
         public async Task<IActionResult> Create(
-            CreateCustomerManagementViewModel vm)
+            [FromBody] CreateCustomerManagementViewModel vm)
         {
-            try
-            {
-                var customer =
-                    await _service.CreateAsync(vm);
+            var customer = await _service.CreateAsync(vm);
 
-                return CreatedAtAction(
-                    nameof(GetById),
-                    new { id = customer.Id },
-                    customer);
-            }
-            catch (ArgumentException ex)
+            return CreatedAtAction(
+                nameof(GetById),
+                new { id = customer.Id },
+                customer);
+        }
+
+
+        // PUT: api/CustomerManagement/5
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update(
+            int id,
+            [FromBody] CreateCustomerManagementViewModel vm)
+        {
+            await _service.UpdateCustomerAsync(id, vm);
+
+            return Ok(new
             {
-                return BadRequest(new
-                {
-                    message = ex.Message
-                });
-            }
+                message = "Customer updated successfully."
+            });
+        }
+
+
+        // PUT: api/CustomerManagement/5/debts/2/pay
+        [HttpPut("{customerId}/debts/{debtId}/pay")]
+        public async Task<IActionResult> PayDebt(
+            int customerId,
+            int debtId,
+            [FromBody] PaymentViewModel vm)
+        {
+            await _service.PayDebtAsync(
+                customerId,
+                debtId,
+                vm);
+
+            return Ok(new
+            {
+                message = "Debt payment registered successfully."
+            });
+        }
+
+
+        // DELETE: api/CustomerManagement/5
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            await _service.DeleteAsync(id);
+
+            return NoContent();
         }
     }
 }

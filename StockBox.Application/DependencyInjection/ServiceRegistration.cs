@@ -19,7 +19,7 @@ namespace StockBox.Application.DependencyInjection
             services.AddScoped<ICustomerService, CustomerService>();
             services.AddScoped<ICustomerServiceRecordService, CustomerServiceRecordService>();
             services.AddScoped<IDebtService, DebtService>();
-
+            services.AddScoped<ICustomerManagementService, CustomerManagementService>();
             return services;
         }
     }

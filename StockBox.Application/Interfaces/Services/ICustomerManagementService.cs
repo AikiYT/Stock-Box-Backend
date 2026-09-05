@@ -9,11 +9,22 @@ namespace StockBox.Application.Interfaces.Services
 {
     public interface ICustomerManagementService
     {
-        Task<CustomerManagementViewModel> CreateAsync(
-            CreateCustomerManagementViewModel vm);
+        Task<List<CustomerManagementViewModel>> GetAllAsync();
 
         Task<CustomerManagementViewModel?> GetByIdAsync(int id);
 
-        Task<List<CustomerManagementViewModel>> GetAllAsync();
+        Task<CustomerManagementViewModel> CreateAsync(
+            CreateCustomerManagementViewModel vm);
+
+        Task UpdateCustomerAsync(
+            int id,
+            CreateCustomerManagementViewModel vm);
+
+        Task PayDebtAsync(
+            int customerId,
+            int debtId,
+            PaymentViewModel vm);
+
+        Task DeleteAsync(int id);
     }
 }

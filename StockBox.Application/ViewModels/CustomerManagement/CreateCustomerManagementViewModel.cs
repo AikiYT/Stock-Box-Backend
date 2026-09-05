@@ -11,10 +11,24 @@ namespace StockBox.Application.ViewModels.CustomerManagement
 {
     public class CreateCustomerManagementViewModel
     {
-        public SaveCustomerViewModel Customer { get; set; } = new();
+        // CUSTOMER
 
-        public SaveCustomerServiceRecordViewModel? Service { get; set; }
+        public string Name { get; set; } = string.Empty;
 
-        public SaveDebtViewModel? Debt { get; set; }
+        public string Phone { get; set; } = string.Empty;
+
+        public string Email { get; set; } = string.Empty;
+
+        public string Address { get; set; } = string.Empty;
+
+
+        // SERVICE
+
+        public CreateServiceViewModel? Service { get; set; }
+
+
+        // DEBT
+
+        public CreateDebtViewModel? Debt { get; set; }
     }
 }
