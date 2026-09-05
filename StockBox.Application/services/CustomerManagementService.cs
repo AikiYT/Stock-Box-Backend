@@ -170,9 +170,17 @@ namespace StockBox.Application.services
                 serviceRecord = new CustomerServiceRecord
                 {
                     CustomerId = customer.Id,
+
                     Description = vm.Service.Description,
-                    ServiceDate = vm.Service.ServiceDate,
+
+                    // IMPORTANTE:
+                    // PostgreSQL timestamp with time zone requiere UTC
+                    ServiceDate = DateTime.SpecifyKind(
+                        vm.Service.ServiceDate,
+                        DateTimeKind.Utc),
+
                     Amount = vm.Service.Amount,
+
                     Notes = vm.Service.Notes
                 };
 
@@ -326,9 +334,15 @@ namespace StockBox.Application.services
                     serviceRecord = new CustomerServiceRecord
                     {
                         CustomerId = id,
+
                         Description = vm.Service.Description,
-                        ServiceDate = vm.Service.ServiceDate,
+
+                        ServiceDate = DateTime.SpecifyKind(
+                            vm.Service.ServiceDate,
+                            DateTimeKind.Utc),
+
                         Amount = vm.Service.Amount,
+
                         Notes = vm.Service.Notes
                     };
 
@@ -341,7 +355,9 @@ namespace StockBox.Application.services
                         vm.Service.Description;
 
                     serviceRecord.ServiceDate =
-                        vm.Service.ServiceDate;
+                        DateTime.SpecifyKind(
+                            vm.Service.ServiceDate,
+                            DateTimeKind.Utc);
 
                     serviceRecord.Amount =
                         vm.Service.Amount;
@@ -388,22 +404,31 @@ namespace StockBox.Application.services
                     debt = new Debt
                     {
                         CustomerId = id,
+
                         Amount = vm.Debt.Amount,
+
                         PaidAmount = vm.Debt.PaidAmount,
+
                         RemainingAmount = remainingAmount,
+
                         IsPaid = remainingAmount == 0,
+
                         CreatedAt = DateTime.UtcNow,
+
                         PaidAt = remainingAmount == 0
                             ? DateTime.UtcNow
                             : null,
+
                         Notes = vm.Debt.Notes
                     };
 
-                    await _debtRepository.AddAsync(debt);
+                    await _debtRepository
+                        .AddAsync(debt);
                 }
                 else
                 {
-                    debt.Amount = vm.Debt.Amount;
+                    debt.Amount =
+                        vm.Debt.Amount;
 
                     debt.PaidAmount =
                         vm.Debt.PaidAmount;
@@ -444,7 +469,7 @@ namespace StockBox.Application.services
 
 
             // -----------------------------------------------------
-            // Buscar deuda
+            // 1. Buscar deuda
             // -----------------------------------------------------
 
             var debt =
@@ -456,7 +481,7 @@ namespace StockBox.Application.services
 
 
             // -----------------------------------------------------
-            // Verificar que la deuda pertenece al cliente
+            // 2. Verificar que pertenece al cliente
             // -----------------------------------------------------
 
             if (debt.CustomerId != customerId)
@@ -465,7 +490,7 @@ namespace StockBox.Application.services
 
 
             // -----------------------------------------------------
-            // Verificar que no esté pagada
+            // 3. Verificar que no esté pagada
             // -----------------------------------------------------
 
             if (debt.IsPaid)
@@ -474,7 +499,7 @@ namespace StockBox.Application.services
 
 
             // -----------------------------------------------------
-            // Verificar que el pago no supere el restante
+            // 4. Verificar que el pago no supere el restante
             // -----------------------------------------------------
 
             if (vm.PaymentAmount > debt.RemainingAmount)
@@ -483,7 +508,7 @@ namespace StockBox.Application.services
 
 
             // -----------------------------------------------------
-            // Registrar pago
+            // 5. Registrar pago
             // -----------------------------------------------------
 
             debt.PaidAmount += vm.PaymentAmount;
@@ -498,7 +523,6 @@ namespace StockBox.Application.services
                 debt.IsPaid
                     ? DateTime.UtcNow
                     : null;
-
 
             await _debtRepository.UpdateAsync(debt);
         }

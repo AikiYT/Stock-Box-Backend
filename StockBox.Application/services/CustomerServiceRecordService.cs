@@ -26,9 +26,12 @@ namespace StockBox.Application.services
             {
                 CustomerId = vm.CustomerId,
                 Description = vm.Description,
-                ServiceDate = vm.ServiceDate,
+
                 Amount = vm.Amount,
-                Notes = vm.Notes
+                Notes = vm.Notes,
+                ServiceDate = DateTime.SpecifyKind(
+    vm.ServiceDate,
+    DateTimeKind.Utc)
             };
 
             await _repository.AddAsync(record);
@@ -97,7 +100,9 @@ namespace StockBox.Application.services
 
             record.CustomerId = vm.CustomerId;
             record.Description = vm.Description;
-            record.ServiceDate = vm.ServiceDate;
+            record.ServiceDate = DateTime.SpecifyKind(
+    vm.ServiceDate,
+    DateTimeKind.Utc);
             record.Amount = vm.Amount;
             record.Notes = vm.Notes;
 
